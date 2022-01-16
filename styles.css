@@ -1,0 +1,64 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+.grid-content-wrapper {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto 1fr;
+  
+  height: 100vh;
+  width: 100vw;
+}
+
+.grid-col-span-4 {
+  grid-column: span 4;
+}
+
+.header {
+  display: flex;
+  height: clamp(75px, 10vh, 125px);
+
+  background-color: black;
+}
+
+.header .header-buttons {
+  width: 75vw;
+
+  background-color: red;
+}
+
+.header .header-user {
+  width: 25vw;
+
+  background-color: green;
+}
+
+.query-results {
+  background-color: hotpink;
+}
+
+.footer {
+  display: flex;
+
+  height: clamp(40px, 5vh, 75px);
+
+  background-color: yellowgreen;
+}
+
+.footer .empty {
+  width: 25vw;
+  background-color: yellow;
+}
+
+.footer .author {
+  width: 50vw;
+  background-color: black;
+}
+
+.footer .status {
+  width: 25vw;
+  background-color: purple;
+}
