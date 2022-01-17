@@ -162,7 +162,7 @@ button:active {
 }
 
 #backdrop-add-book {
-  display: block;
+  display: none;
 }
 
 #backdrop-login-user {
@@ -276,6 +276,17 @@ button:active {
   color: var(--lighter-dark-gray-color);
 }
 
+.modal form select {
+  width: 75%;
+
+  border: solid 1px var(--black-color);
+
+  color: var(--black-color);
+  font-size: clamp(0.75rem, 1.75vh, 1.5rem);
+
+  background-color: var(--white-color);
+}
+
 /*==================== Book Output ====================*/
 .card-book {
   display: flex;
@@ -295,13 +306,12 @@ button:active {
 }
 
 .card-book * {
-  font-size: clamp(0.5rem, 1vmax, 1.5rem);
+  font-size: clamp(0.5rem, 1.25vmax, 1.5rem);
 }
 
 .card-book .book-title {
   width: 25%;
 }
-
 
 .card-book .book-author {
   width: 25%;
@@ -312,32 +322,13 @@ button:active {
 }
 
 .card-book .book-pages {
-  width: 10%;
-}
-
-.card-book .book-reading-period {
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: space-evenly;
-
-  width: 10%;
-  height: 100%;
+  width: 15%;
 }
 
 .card-book .book-reading-status {
-  width: 10%;
+  width: 15%;
 }
 
 .card-book .book-score {
   width: 5%;
-}
-
-.card-book .date-wrapper .started-reading {
-  width: 100%;
-}
-
-.card-book .date-wrapper .ended-reading {
-  width: 100%;
 }

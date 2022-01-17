@@ -7,10 +7,6 @@ let bookData = `
     <div class="book-author">Author</div>
     <div class="book-genre">Genre</div>
     <div class="book-pages">Pages</div>
-    <div class="book-reading-period">
-        <div class="started-reading">00.00.0000</div>
-        <div class="ended-reading">00.00.0000</div>
-    </div>
     <div class="book-reading-status">Status</div>
     <div class="book-score">Score</div>
     </div> 
@@ -22,10 +18,6 @@ let bookDataLong = `
     <div class="book-author">Authordsadsjkglaghask fdasfdasfdas fdsa fdasf das fdasfdsa</div>
     <div class="book-genre">dsadsaddasgdaf</div>
     <div class="book-pages">12341</div>
-    <div class="book-reading-period">
-        <div class="started-reading">00.00.0000</div>
-        <div class="ended-reading">00.00.0000</div>
-    </div>
     <div class="book-reading-status">Want to Read</div>
     <div class="book-score">10</div>
     </div> 

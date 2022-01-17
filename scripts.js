@@ -24,7 +24,7 @@ const buttonSubmitFormLoginUser = document.getElementById(
   "submit-form-login-user"
 );
 const buttonSubmitFormRegisterUser = document.getElementById(
-  "submir-form-register-user"
+  "submit-form-register-user"
 );
 
 function init() {
@@ -82,12 +82,12 @@ function init() {
 
   buttonSubmitFormLoginUser.addEventListener("click", (event) => {
     event.preventDefault();
-    console.log("New user added!");
+    validateAndSendLoginUserFormData();
   });
 
-  buttonRegisterUser.addEventListener("click", (event) => {
+  buttonSubmitFormRegisterUser.addEventListener("click", (event) => {
     event.preventDefault();
-    console.log("New user registered!");
+    validateAndSendRegisterUserFormData();
   });
 }
 
@@ -101,43 +101,49 @@ function setInputAlert(input, message) {
 function setInputDefault(input) {
   input.style.background = whiteColor;
   input.style.border = "solid 1px " + blackColor;
+  input.placeholder = "";
+}
+
+function validateEmail(email) {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 }
 
 function validateAndSendAddBookFormData() {
-  let everythingIsCorrect = true;
+  let formIsOK = true;
 
   const title = document.getElementById("add-book-title"); // done
   const author = document.getElementById("add-book-author"); // done
-  const genre = document.getElementById("add-book-genre");
+  const genre = document.getElementById("add-book-genre"); // done
   const pages = document.getElementById("add-book-pages"); // done
-  const startedReading = document.getElementById("add-book-started-reading");
-  const finishedReading = document.getElementById("add-book-finished-reading");
-  const status = document.getElementById("add-book-status");
+  const status = document.getElementById("add-book-status"); // done
   const score = document.getElementById("add-book-score"); // done
-
-  console.log(title.value);
-  console.log(author.value);
-  console.log(genre.value);
-  console.log(pages.value);
-  console.log(startedReading.value);
-  console.log(finishedReading.value);
-  console.log(status.value);
-  console.log(score.value);
 
   // ==================== Title ====================
   if (title.value === "") {
-    everythingIsCorrect = false;
-    setInputAlert(title, "This field cannot be enpty!");
+    formIsOK = false;
+    setInputAlert(title, "This field cannot be empty!");
   } else {
     setInputDefault(title);
   }
 
   // ==================== Author ====================
   if (author.value === "") {
-    everythingIsCorrect = false;
-    setInputAlert(author, "This field cannot be enpty!");
+    formIsOK = false;
+    setInputAlert(author, "This field cannot be empty!");
   } else {
     setInputDefault(author);
+  }
+
+  // ==================== Genre ====================
+  if (genre.value === "") {
+    formIsOK = false;
+    setInputAlert(genre, "This field cannot be empty!");
+  } else {
+    setInputDefault(genre);
   }
 
   // ==================== Pages ====================
@@ -146,41 +152,149 @@ function validateAndSendAddBookFormData() {
       if (Number.isInteger(Number(pages.value)) && Number(pages.value) > 0) {
         setInputDefault(pages);
       } else {
-        everythingIsCorrect = false;
+        formIsOK = false;
         setInputAlert(pages, "It has to be a positive integer!");
       }
     } else {
-      everythingIsCorrect = false;
+      formIsOK = false;
       setInputAlert(pages, "It has to be a positive integer!");
     }
   } else {
-    everythingIsCorrect = false;
+    formIsOK = false;
     setInputAlert(pages, "It has to be a positive integer!");
   }
 
-  // ==================== Score ====================
-  if (!(score.value === "")) {
-    if (!isNaN(score.value)) {
-      if (Number.isInteger(Number(score.value)) && Number(score.value) >= 0 && Number(score.value) <= 10) {
-          setInputDefault(score);
-      } else {
-        everythingIsCorrect = false;
-        setInputAlert(score, "Score range: 0-10!");
-      }
-    } else {
-      everythingIsCorrect = false;
-      setInputAlert(score, "Score range: 0-10!");
-    }
+  // ==================== Status ====================
+  if (status.value != -1 && status.value != 0 && status.value != 1) {
+    formIsOK = false;
+    status.style.background = "rgba(255, 0, 0, 0.25)";
+    status.style.border = "solid 1px red";
   } else {
-    everythingIsCorrect = false;
-    setInputAlert(score, "Score range: 0-10!");
+    setInputDefault(status);
   }
 
-  if (everythingIsCorrect) {
-    
+  // ==================== Score ====================
+  if (status.value == 1) {
+    if (!(score.value === "")) {
+      if (!isNaN(score.value)) {
+        if (
+          Number.isInteger(Number(score.value)) &&
+          Number(score.value) >= 0 &&
+          Number(score.value) <= 10
+        ) {
+          setInputDefault(score);
+        } else {
+          formIsOK = false;
+          setInputAlert(score, "Score between 0 and 10!");
+        }
+      } else {
+        formIsOK = false;
+        setInputAlert(score, "Score between 0 and 10!");
+      }
+    } else {
+      formIsOK = false;
+      setInputAlert(score, "Score between 0 and 10!");
+    }
+  } else {
+    setInputDefault(score);
+    score.value = "None";
+  }
+
+  if (formIsOK) {
+    console.log("TO-DO: Send data to the server!");
   }
 }
 
-function validateAndSendLoginUserFormData() {}
+function validateAndSendLoginUserFormData() {
+  let formIsOK = true;
 
-function validateAndSendRegisterUserFormData() {}
+  const email = document.getElementById("login-user-email"); // done
+  const password = document.getElementById("login-user-password"); // done
+
+  // ==================== Email ====================
+  if (email.value === "") {
+    formIsOK = false;
+    setInputAlert(email, "Email field cannot be empty!");
+  } else {
+    if (!validateEmail(email.value)) {
+      formIsOK = false;
+      setInputAlert(email, "Incorrect email!");
+    } else {
+      setInputDefault(email);
+    }
+  }
+
+  // ==================== Password ====================
+  if (password.value === "") {
+    formIsOK = false;
+    setInputAlert(password, "Password field cannot be empty!");
+  } else {
+    setInputDefault(password);
+  }
+
+  if (formIsOK) {
+    console.log("TO-DO: Send login to the server!");
+  }
+}
+
+function validateAndSendRegisterUserFormData() {
+  let formIsOK = true;
+
+  const name = document.getElementById("register-user-name"); // done
+  const email = document.getElementById("register-user-email"); // done
+  const password = document.getElementById("register-user-password"); // done
+  const passwordRepeated = document.getElementById(
+    "register-user-password-repeated"
+  ); // done
+
+  // ==================== Name ====================
+  if (name.value.length < 3) {
+    formIsOK = false;
+    setInputAlert(name, "Name is too short!");
+  } else {
+    setInputDefault(name);
+  }
+
+  // ==================== Email ====================
+  if (!validateEmail(email.value)) {
+    formIsOK = false;
+    setInputAlert(email, "Incorrect email!");
+  } else {
+    setInputDefault(email);
+  }
+
+  // ==================== Password ====================
+  if (password.value === passwordRepeated.value) {
+    if (password.value.length < 7) {
+      formIsOK = false;
+      setInputAlert(password, "Password is too short!");
+      setInputAlert(passwordRepeated, "Password is too short!");
+    } else {
+      setInputDefault(password);
+      setInputDefault(passwordRepeated);
+    }
+  } else {
+    formIsOK = false;
+    setInputAlert(password, "Passwords don't match!");
+    setInputAlert(passwordRepeated, "Passwords don't match!");
+  }
+
+  if (formIsOK) {
+    console.log("TO-DO: Send register to the server!");
+  }
+}
+
+/*======================================================= Indexed DB ==========================================*/
+
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || 
+window.msIndexedDB;
+ 
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || 
+window.msIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange || 
+window.webkitIDBKeyRange || window.msIDBKeyRange
+ 
+if (!window.indexedDB) {
+   window.alert("Your browser doesn't support a stable version of IndexedDB.")
+}
+

@@ -34,21 +34,21 @@
           </div>
           <form id="form-add-book" action="#">
             <label for="add-book-title">Title: </label>
-            <input type="text" id="add-book-title" name="add-book-title">
+            <input type="text" id="add-book-title" name="add-book-title" />
             <label for="add-book-author">Author: </label>
-            <input type="text" id="add-book-author" name="add-book-author">
+            <input type="text" id="add-book-author" name="add-book-author" />
             <label for="add-book-genre">Genre: </label>
-            <input type="text" id="add-book-genre" name="add-book-genre">
+            <input type="text" id="add-book-genre" name="add-book-genre" />
             <label for="add-book-pages">Pages: </label>
-            <input type="text" id="add-book-pages" name="add-book-pages">
-            <label for="add-book-started-reading">Started reading: </label>
-            <input type="text" id="add-book-started-reading" name="add-book-started-reading">
-            <label for="add-book-finished-reading">Finished reading: </label>
-            <input type="text" id="add-book-finished-reading" name="add-book-finished-reading">
+            <input type="text" id="add-book-pages" name="add-book-pages" />
             <label for="add-book-status">Status: </label>
-            <input type="text" id="add-book-status" name="add-book-status">
+            <select id="add-book-status" name="add-book-status">
+              <option value="-1">Want to read</option>
+              <option value="0">Reading</option>
+              <option value="1">Finished</option>
+            </select>
             <label for="add-book-score">Score: </label>
-            <input type="text" id="add-book-score" name="add-book-score">
+            <input type="text" id="add-book-score" name="add-book-score" />
             <div class="button-wrapper">
               <button id="backdrop-add-book-close">Close</button>
               <button id="submit-form-add-book">Add</button>
@@ -64,10 +64,14 @@
             <span>Login</span>
           </div>
           <form id="form-login-user" action="#">
-            <label for="email">E-mail: </label>
-            <input type="text" id="email" name="email">
-            <label for="password">Password: </label>
-            <input type="password" id="password" name="password">
+            <label for="login-user-email">E-mail: </label>
+            <input type="text" id="login-user-email" name="login-user-email" />
+            <label for="login-user-password">Password: </label>
+            <input
+              type="password"
+              id="login-user-password"
+              name="login-user-password"
+            />
             <div class="button-wrapper">
               <button id="backdrop-login-user-close">Close</button>
               <button id="submit-form-login-user">Login</button>
@@ -83,23 +87,41 @@
             <span>Register</span>
           </div>
           <form id="form-register-user" action="#">
-            <label for="name">Name: </label>
-            <input type="text" id="name" name="name">
-            <label for="email">E-mail: </label>
-            <input type="text" id="email" name="email">
-            <label for="password">Password: </label>
-            <input type="password" id="password" name="password">
-            <label for="password-repeated">Repeat Password: </label>
-            <input type="password" id="password-repeated" name="password-repeated">
+            <label for="register-user-name">Name: </label>
+            <input
+              type="text"
+              id="register-user-name"
+              name="register-user-name"
+            />
+            <label for="register-user-email">E-mail: </label>
+            <input
+              type="text"
+              id="register-user-email"
+              name="register-user-email"
+            />
+            <label for="register-user-password">Password: </label>
+            <input
+              type="password"
+              id="register-user-password"
+              name="register-user-password"
+            />
+            <label for="register-user-password-repeated"
+              >Repeat Password:
+            </label>
+            <input
+              type="password"
+              id="register-user-password-repeated"
+              name="register-user-password-repeated"
+            />
             <div class="button-wrapper">
               <button id="backdrop-register-user-close">Close</button>
               <button id="submit-form-register-user">Register</button>
             </div>
           </form>
         </div>
-      </div>  
+      </div>
 
-      <script src="test.js"></script>
+      
       <script src="scripts.js"></script>
     </div>
   </body>
