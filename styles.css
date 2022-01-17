@@ -1,16 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
+
+:root {
+  --distance-between-results-rows: 10px;
+  --distance-between-buttons: 10px;
+  --distance-between-div-header: 10px;
+
+  --main-font: "Open Sans";
+
+  --black-color: #1d1d1b;
+  --darker-dark-gray-color: #404040;
+  --lighter-dark-gray-color: #565656;
+  --darker-gray-color: #a9a9a9;
+  --lighter-gray-color: #d6d6d6;
+  --white-color: #ffffff;
+
+  --block-backgroud-color: #565555;
+}
+
 * {
   margin: 0px;
   padding: 0px;
+
+  font-family: var(--main-font);
 }
 
+/*==================== Basic Layout ====================*/
 .grid-content-wrapper {
   display: grid;
 
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto 1fr;
   
-  height: 100vh;
-  width: 100vw;
+  width: 100%;
+  min-height: 100vh;
 }
 
 .grid-col-span-4 {
@@ -19,25 +42,43 @@
 
 .header {
   display: flex;
-  height: clamp(75px, 10vh, 125px);
+  gap: var(--distance-between-div-header);
 
-  background-color: black;
+  height: clamp(75px, 10vh, 125px);
+  max-width: 100%;
+
+  background-color: var(--black-color);
+
+  box-shadow: 0 0 10px var(--black-color);
+
+  color: var(--white-color);
 }
 
 .header .header-buttons {
-  width: 75vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: var(--distance-between-buttons);
 
-  background-color: red;
+  width: 75%;
 }
 
 .header .header-user {
-  width: 25vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: var(--distance-between-buttons);
 
-  background-color: green;
+  width: 25%;
 }
 
 .query-results {
-  background-color: hotpink;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--distance-between-results-rows);
+
+  padding: var(--distance-between-results-rows);
 }
 
 .footer {
@@ -45,20 +86,258 @@
 
   height: clamp(40px, 5vh, 75px);
 
-  background-color: yellowgreen;
+  background-color: var(--black-color);
+
+  box-shadow: 0 0 10px var(--black-color);
+
+  color: var(--white-color);
+  font-size: clamp(0.75rem, 1vmax, 1.5rem);
 }
 
 .footer .empty {
-  width: 25vw;
-  background-color: yellow;
+  width: 25%;
 }
 
 .footer .author {
-  width: 50vw;
-  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 50%;
 }
 
 .footer .status {
-  width: 25vw;
-  background-color: purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 25%;
+}
+
+/*==================== Buttons ====================*/
+.header button {
+  background-color: transparent;
+
+  color: var(--white-color);
+  font-weight: 700;
+
+  border: none;
+  /*border: solid 0px white;
+  border-radius: clamp(5px, 0.75vh, 10px);*/
+
+  height: clamp(37.5px, 5vh, 62.5px);
+}
+
+button:hover {
+  color: var(--lighter-gray-color);
+}
+
+button:active {
+  color: var(--darker-gray-color);
+}
+
+.header-buttons button {
+  width: clamp(100px, 15%, 400px);
+
+  font-size: clamp(1rem, 1.5vmax, 2rem);
+}
+
+.header-user button {
+  width: clamp(100px, 20%, 400px);
+
+  font-size: clamp(0.75rem, 1vmax, 1.5rem);
+}
+
+/*==================== Forms ====================*/
+.backdrop {
+  position: fixed;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.25);
+
+  width: 100%;
+  height: 100vh;
+
+  top: 0;
+  left: 0;
+}
+
+#backdrop-add-book {
+  display: block;
+}
+
+#backdrop-login-user {
+  display: none;
+}
+
+#backdrop-register-user {
+  display: none;
+}
+
+.modal {
+  width: clamp(400px, 30%, 800px);
+  
+  position: fixed;
+  z-index: 10;
+
+  top: 20vh;
+  left: calc(50% - clamp(400px, 30%, 800px) / 2);
+
+  box-shadow: 0 0 5px var(--black-color);
+  border-radius: 6px;
+  background-color: white;
+}
+
+.modal .header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: clamp(2rem, 2.5vmax, 5rem);
+}
+
+.modal form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 15px;
+
+  flex-direction: column;
+  gap: 1px;
+
+  color: var(--black-color);
+  font-size: clamp(0.75rem, 1.75vh, 1.5rem);
+}
+
+.modal form input {
+  width: 75%;
+
+  border: solid 1px var(--black-color);
+}
+
+.modal form input[type = text] {
+  color: var(--black-color);
+  font-size: clamp(0.75rem, 1.75vh, 1.5rem);
+}
+
+.modal form input[type = password] {
+  color: var(--black-color);
+  font-size: clamp(0.75rem, 1.75vh, 1.5rem);
+}
+
+.modal form input[type = submit] {
+  width: 50%;
+
+  margin: 10px;
+
+  background-color: transparent;
+  border: none;
+
+  font-size: clamp(1rem, 3vh, 2rem);
+  font-weight: 700;
+}
+
+.modal form input[type = submit]:hover {
+  color: var(--darker-dark-gray-color);
+}
+
+.modal form input[type = submit]:active {
+  color: var(--lighter-dark-gray-color);
+}
+
+.modal form .button-wrapper {
+  display: flex;
+
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.modal form .button-wrapper input[type = submit] {
+  width: 40%;
+}
+
+.modal form .button-wrapper button {
+  width: 40%;
+
+  margin: 10px;
+
+  background-color: transparent;
+  border: none;
+
+  font-size: clamp(1rem, 3vh, 2rem);
+  font-weight: 700;
+}
+
+.modal form .button-wrapper button:hover {
+  color: var(--darker-dark-gray-color);
+}
+
+.modal form .button-wrapper button:active {
+  color: var(--lighter-dark-gray-color);
+}
+
+/*==================== Book Output ====================*/
+.card-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 90%;
+  
+  height: clamp(50px, 10vh, 100px);
+
+  border: solid var(--black-color) 1px;
+  border-radius: clamp(12.5px, 2.5vh, 25px);
+
+  box-shadow: 0 0 5px var(--black-color);
+
+  text-align: center;
+}
+
+.card-book * {
+  font-size: clamp(0.5rem, 1vmax, 1.5rem);
+}
+
+.card-book .book-title {
+  width: 25%;
+}
+
+
+.card-book .book-author {
+  width: 25%;
+}
+
+.card-book .book-genre {
+  width: 15%;
+}
+
+.card-book .book-pages {
+  width: 10%;
+}
+
+.card-book .book-reading-period {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: space-evenly;
+
+  width: 10%;
+  height: 100%;
+}
+
+.card-book .book-reading-status {
+  width: 10%;
+}
+
+.card-book .book-score {
+  width: 5%;
+}
+
+.card-book .date-wrapper .started-reading {
+  width: 100%;
+}
+
+.card-book .date-wrapper .ended-reading {
+  width: 100%;
 }

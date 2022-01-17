@@ -7,56 +7,100 @@
   </head>
   <body>
     <div class="grid-content-wrapper">
-    <div class="grid-col-span-4 header">
-      <div class="header-buttons">
-        
+      <div class="grid-col-span-4 header">
+        <div class="header-buttons">
+          <button id="button-add-book">Add Book</button>
+          <button id="button-update-book">Update Book</button>
+          <button id="button-remove-book">Remove Book</button>
+          <button id="button-show-charts">Show Charts</button>
+        </div>
+        <div class="header-user">
+          <button id="button-login-user">Login</button>
+          <button id="button-register-user">Register</button>
+        </div>
       </div>
-      <div class="header-user">
-        
+      <div class="grid-col-span-4 query-results" id="books-data"></div>
+      <div class="grid-col-span-4 footer">
+        <div class="empty"></div>
+        <div class="author">&copy; Rafał Walkowiak</div>
+        <div class="status">Status: offline</div>
       </div>
-    </div>
-    <div class="grid-col-span-4 query-results">
-      
-    </div>
-    <div class="grid-col-span-4 footer">
-      <div class="empty">
-        1
+
+      <!-- ==================== Add New Book ==================== -->
+      <div class="backdrop" id="backdrop-add-book">
+        <div class="modal" id="add-book-modal">
+          <div class="header">
+            <span>Add New Book</span>
+          </div>
+          <form id="form-add-book" action="#">
+            <label for="add-book-title">Title: </label>
+            <input type="text" id="add-book-title" name="add-book-title">
+            <label for="add-book-author">Author: </label>
+            <input type="text" id="add-book-author" name="add-book-author">
+            <label for="add-book-genre">Genre: </label>
+            <input type="text" id="add-book-genre" name="add-book-genre">
+            <label for="add-book-pages">Pages: </label>
+            <input type="text" id="add-book-pages" name="add-book-pages">
+            <label for="add-book-started-reading">Started reading: </label>
+            <input type="text" id="add-book-started-reading" name="add-book-started-reading">
+            <label for="add-book-finished-reading">Finished reading: </label>
+            <input type="text" id="add-book-finished-reading" name="add-book-finished-reading">
+            <label for="add-book-status">Status: </label>
+            <input type="text" id="add-book-status" name="add-book-status">
+            <label for="add-book-score">Score: </label>
+            <input type="text" id="add-book-score" name="add-book-score">
+            <div class="button-wrapper">
+              <button id="backdrop-add-book-close">Close</button>
+              <button id="submit-form-add-book">Add</button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="author">
-        2
+
+      <!-- ==================== Login ==================== -->
+      <div class="backdrop" id="backdrop-login-user">
+        <div class="modal" id="login-user-modal">
+          <div class="header">
+            <span>Login</span>
+          </div>
+          <form id="form-login-user" action="#">
+            <label for="email">E-mail: </label>
+            <input type="text" id="email" name="email">
+            <label for="password">Password: </label>
+            <input type="password" id="password" name="password">
+            <div class="button-wrapper">
+              <button id="backdrop-login-user-close">Close</button>
+              <button id="submit-form-login-user">Login</button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="status">
-        3
-      </div>
+
+      <!-- ==================== Register ==================== -->
+      <div class="backdrop" id="backdrop-register-user">
+        <div class="modal" id="register-user-modal">
+          <div class="header">
+            <span>Register</span>
+          </div>
+          <form id="form-register-user" action="#">
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="name">
+            <label for="email">E-mail: </label>
+            <input type="text" id="email" name="email">
+            <label for="password">Password: </label>
+            <input type="password" id="password" name="password">
+            <label for="password-repeated">Repeat Password: </label>
+            <input type="password" id="password-repeated" name="password-repeated">
+            <div class="button-wrapper">
+              <button id="backdrop-register-user-close">Close</button>
+              <button id="submit-form-register-user">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>  
+
+      <script src="test.js"></script>
+      <script src="scripts.js"></script>
     </div>
-    </div>
-    <!--
-    <div id="Header">
-      <div id="Data">
-        <button>Add</button>
-        <button>Update</button>
-        <button>Delete</button>
-        <button>Find</button>
-        <button>Charts</button>
-      </div>
-      <div id="User">
-        <button>Login</button>
-        <button>Register</button>
-      </div>
-    </div>
-    <div id="Main">All the data will go here</div>
-    <div id="Footer">
-      <div id="Empty"></div>
-      <div id="Author">Author</div>
-      <div id="Status">Online status</div>
-    </div>
-    
-    <div id="blocker">
-      
-    </div>
-    <div class="window">
-      <button>Test</button>
-    </div>
-    -->
   </body>
 </html>
