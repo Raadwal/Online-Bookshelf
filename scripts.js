@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", init);
 
+const cardBookTitle = document.getElementById("books-data").innerHTML;
+const separator = ":-::-:";
 // Black from css to restore default after alert
 const blackColor = "#1d1d1b";
 const whiteColor = "#ffffff";
 
+const buttonShowBooks = document.getElementById("button-show-books");
 const buttonAddBook = document.getElementById("button-add-book");
 const buttonUpdateBook = document.getElementById("button-update-book");
 const buttonRemoveBook = document.getElementById("button-remove-book");
@@ -12,37 +15,32 @@ const buttonLoginUser = document.getElementById("button-login-user");
 const buttonRegisterUser = document.getElementById("button-register-user");
 
 const buttonCloseAddBook = document.getElementById("backdrop-add-book-close");
-const buttonCloseLoginUser = document.getElementById(
-  "backdrop-login-user-close"
-);
-const buttonCloseRegisterUser = document.getElementById(
-  "backdrop-register-user-close"
-);
+const buttonCloseLoginUser = document.getElementById("backdrop-login-user-close");
+const buttonCloseRegisterUser = document.getElementById("backdrop-register-user-close");
+const buttonCloseInfo = document.getElementById("backdrop-info-close");
 
 const buttonSubmitFormAddBook = document.getElementById("submit-form-add-book");
-const buttonSubmitFormLoginUser = document.getElementById(
-  "submit-form-login-user"
-);
-const buttonSubmitFormRegisterUser = document.getElementById(
-  "submit-form-register-user"
-);
+const buttonSubmitFormLoginUser = document.getElementById("submit-form-login-user");
+const buttonSubmitFormRegisterUser = document.getElementById("submit-form-register-user");
 
 function init() {
   // Navigation buttons
+  buttonShowBooks.addEventListener("click", showBooks);
+
   buttonAddBook.addEventListener("click", () => {
     document.getElementById("backdrop-add-book").style.display = "block";
   });
 
   buttonUpdateBook.addEventListener("click", () => {
-    console.log("Update Book");
+    showEditMenu();
   });
 
   buttonRemoveBook.addEventListener("click", () => {
-    console.log("Remove Book");
+    showRemoveMenu();
   });
 
   buttonShowCharts.addEventListener("click", () => {
-    console.log("Show Charts");
+    readAllBooks(document.getElementById("books-data"));
   });
 
   buttonLoginUser.addEventListener("click", () => {
@@ -70,14 +68,9 @@ function init() {
   });
 
   // Adding data do database
-
   buttonSubmitFormAddBook.addEventListener("click", (event) => {
     event.preventDefault();
-    const form = document.getElementById("form-add-book");
-
-    if (validateAndSendAddBookFormData()) {
-      console.log("Add Book Form OK");
-    }
+    validateAndSendAddBookFormData()
   });
 
   buttonSubmitFormLoginUser.addEventListener("click", (event) => {
@@ -89,6 +82,21 @@ function init() {
     event.preventDefault();
     validateAndSendRegisterUserFormData();
   });
+
+  buttonCloseInfo.addEventListener("click", (event) => {
+    document.getElementById("backdrop-info").style.display = "none";
+  });
+}
+
+function showInfoBackdrop(openedBackdrop, header, message) {
+  if(openedBackdrop) {
+    openedBackdrop.style.display = "none";
+  }
+  
+  document.getElementById("backdrop-info").style.display = "block";
+
+  document.getElementById("header-text").innerText = header;
+  document.getElementById("message-text").innerText = message;
 }
 
 function setInputAlert(input, message) {
@@ -112,7 +120,27 @@ function validateEmail(email) {
     );
 }
 
-function validateAndSendAddBookFormData() {
+function clearAddBookForm() {
+  document.getElementById("add-book-title").value = "";
+  document.getElementById("add-book-author").value = "";
+  document.getElementById("add-book-genre").value = "";
+  document.getElementById("add-book-pages").value = "";
+  document.getElementById("add-book-score").value = "";
+}
+
+function clearLoginForm() {
+  document.getElementById("login-user-email").value = "";
+  document.getElementById("login-user-password").value = "";
+}
+
+function clearRegisterForm() {
+  document.getElementById("register-user-name").value = "";
+  document.getElementById("register-user-email").value = "";
+  document.getElementById("register-user-password").value = "";
+  document.getElementById("register-user-password-repeated").value = "";
+}
+
+async function validateAndSendAddBookFormData() {
   let formIsOK = true;
 
   const title = document.getElementById("add-book-title"); // done
@@ -177,11 +205,7 @@ function validateAndSendAddBookFormData() {
   if (status.value == 1) {
     if (!(score.value === "")) {
       if (!isNaN(score.value)) {
-        if (
-          Number.isInteger(Number(score.value)) &&
-          Number(score.value) >= 0 &&
-          Number(score.value) <= 10
-        ) {
+        if (Number.isInteger(Number(score.value)) && Number(score.value) >= 0 && Number(score.value) <= 10) {
           setInputDefault(score);
         } else {
           formIsOK = false;
@@ -197,11 +221,20 @@ function validateAndSendAddBookFormData() {
     }
   } else {
     setInputDefault(score);
-    score.value = "None";
+    score.value = 0;
   }
 
   if (formIsOK) {
-    console.log("TO-DO: Send data to the server!");
+    const book = {
+      title: title.value,
+      author: author.value,
+      genre: genre.value,
+      pages: pages.value,
+      status: status.value,
+      score: score.value,
+    };
+
+    addBook(book);
   }
 }
 
@@ -234,6 +267,7 @@ function validateAndSendLoginUserFormData() {
 
   if (formIsOK) {
     console.log("TO-DO: Send login to the server!");
+    clearLoginForm();
   }
 }
 
@@ -243,9 +277,7 @@ function validateAndSendRegisterUserFormData() {
   const name = document.getElementById("register-user-name"); // done
   const email = document.getElementById("register-user-email"); // done
   const password = document.getElementById("register-user-password"); // done
-  const passwordRepeated = document.getElementById(
-    "register-user-password-repeated"
-  ); // done
+  const passwordRepeated = document.getElementById("register-user-password-repeated"); // done
 
   // ==================== Name ====================
   if (name.value.length < 3) {
@@ -281,20 +313,169 @@ function validateAndSendRegisterUserFormData() {
 
   if (formIsOK) {
     console.log("TO-DO: Send register to the server!");
+    clearRegisterForm();
   }
 }
 
-/*======================================================= Indexed DB ==========================================*/
+async function showBooks() {
+  const booksData = await getAllBooksFromIndexedDB();
+  const outputHTML = [];
 
-window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || 
-window.msIndexedDB;
- 
-window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || 
-window.msIDBTransaction;
-window.IDBKeyRange = window.IDBKeyRange || 
-window.webkitIDBKeyRange || window.msIDBKeyRange
- 
-if (!window.indexedDB) {
-   window.alert("Your browser doesn't support a stable version of IndexedDB.")
+  booksData.forEach(book => {
+    let bookToHTML = `
+    <div class="card-book">
+    <div class="book-title">${book.title}</div>
+    <div class="book-author">${book.author}</div>
+    <div class="book-genre">${book.genre}</div>
+    <div class="book-pages">${book.pages}</div>
+    <div class="book-reading-status">${statusMap.get(Number(book.status))}</div>
+    <div class="book-score">${book.score}</div>
+    </div> 
+    `;
+
+    outputHTML.push(bookToHTML);
+  });
+
+  const resultDiv = document.getElementById("books-data");
+  resultDiv.innerHTML = cardBookTitle;
+  
+  outputHTML.forEach(bookHTML => {
+    resultDiv.innerHTML += bookHTML;
+  }); 
+};
+
+async function addBook(book) {
+  try {
+    await addBookToIndexedDB(book);
+    await showBooks();
+    clearAddBookForm();
+    showInfoBackdrop(document.getElementById("backdrop-add-book"), "Success!", "Book has been added!");
+  } catch (error) {
+    setInputAlert(title, "Book & Author combination exists!");
+    setInputAlert(author, "Book & Author combination exists!");
+  }
 }
 
+async function showEditMenu() {
+  const booksData = await getAllBooksFromIndexedDB();
+  const outputHTML = [];
+
+  booksData.forEach(book => {
+    let key = book.title + separator + book.author;
+    let bookToHTML = `
+      <option value=${key}>
+      Title: ${book.title},\t
+      Author: ${book.author},\t 
+      Genre: ${book.genre},\t
+      Pages: ${book.pages},\t
+      Status: ${statusMap.get(Number(book.status))},\t 
+      Score: ${book.score} 
+      </option> 
+    `;
+
+    outputHTML.push(bookToHTML);
+  });
+
+  const resultDiv = document.getElementById("books-data");
+  let htmlString = "<select size=10 id=\"select-edit-book\">";
+
+  outputHTML.forEach(bookHTML => {
+    htmlString += bookHTML;
+  })
+
+  htmlString += "</select>";
+  htmlString += "<div class=\"wrapper-update-input\">";
+  htmlString += "<label for=\"update-book-status\"> Status: </label>";
+  htmlString += "<select id=\"update-book-status\" name=\"update-book-status\">";
+  htmlString += "<option value=\"-1\">Want to read</option>";
+  htmlString += "<option value=\"0\">Reading</option>";
+  htmlString += "<option value=\"1\">Finished</option>";
+  htmlString += "</select>";
+  htmlString += "<label for=\"update-book-score\"> Score: </label>";
+  htmlString += "<input type=\"text\" id=\"update-book-score\" name=\"update-book-score\"/>";
+  htmlString += "</div>";
+  htmlString += "<button id=\"button-edit-selected-book\">Edit Selected Book</button>";
+
+  resultDiv.innerHTML = htmlString;
+
+  document.getElementById("button-edit-selected-book").addEventListener("click", (event) => {
+    event.preventDefault();
+    const selectedBook = document.getElementById("select-edit-book");
+    if(!(selectedBook.value === "")) {
+      let newStatus = document.getElementById("update-book-status");
+      let newScore = document.getElementById("update-book-score");
+
+      let formOK = true;
+      
+      if(newStatus.value == 1) {
+        if(newScore.value >= 0 && newScore.value <= 10) {
+          setInputDefault(newStatus);
+        } else {
+          setInputAlert(newScore, "Score between 0 and 10!")
+          formOK = false;
+        }
+      } else if(newScore.value == -1 || newScore.value == -0) {
+        setInputDefault(newStatus);
+        newScore.value = 0
+      } else {
+        setInputDefault(newStatus);
+        newStatus.value = -1;
+        newScore.value = 0;
+      }
+
+      if(formOK) {
+        const success = updateBookInIndexedDB(selectedBook.value, separator, newStatus.value, newScore.value);
+
+      if(success) {
+        showInfoBackdrop(null, "Success!", "Book has been successfully edited!");
+        showEditMenu();
+      }
+      }
+    }
+  });
+}
+
+async function showRemoveMenu() {
+  const booksData = await getAllBooksFromIndexedDB();
+  const outputHTML = [];
+
+  booksData.forEach(book => {
+    let key = book.title + separator + book.author;
+    let bookToHTML = `
+      <option value=${key}>
+      Title: ${book.title},\t
+      Author: ${book.author},\t 
+      Genre: ${book.genre},\t
+      Pages: ${book.pages},\t
+      Status: ${statusMap.get(Number(book.status))},\t 
+      Score: ${book.score} 
+      </option> 
+    `;
+
+    outputHTML.push(bookToHTML);
+  });
+
+  const resultDiv = document.getElementById("books-data");
+  let htmlString = "<select size=10 id=\"select-remove-book\">";
+
+  outputHTML.forEach(bookHTML => {
+    htmlString += bookHTML;
+  })
+
+  htmlString += "</select>";
+  htmlString += "<button id=\"button-remove-selected-book\">Remove Selected Book</button>";
+
+  resultDiv.innerHTML = htmlString;
+
+  document.getElementById("button-remove-selected-book").addEventListener("click", () => {
+    const selectedBook = document.getElementById("select-remove-book");
+    if(!(selectedBook.value === "")) {
+      const success = removeBookFromIndexedDB(selectedBook.value, separator);
+
+      if(success) {
+        showRemoveMenu();
+        showInfoBackdrop(null, "Success!", "Book has been successfully removed!");
+      }
+    }
+  });
+}
