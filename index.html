@@ -69,6 +69,25 @@
         </div>
       </div>
 
+      <!-- ==================== Update Book ==================== -->
+      <div class="backdrop" id="backdrop-login-user">
+        <div class="modal" id="login-user-modal">
+          <div class="header">
+            <span>Login</span>
+          </div>
+          <form id="form-update-book" action="#">
+            <label for="update-book-status">E-mail: </label>
+            <input type="text" id="update-book-status" name="update-book-status" />
+            <label for="update-book-score">Password: </label>
+            <input type="text" id="update-book-score" name="update-book-score" />
+            <div class="button-wrapper">
+              <button id="backdrop-update-book-close">Close</button>
+              <button id="submit-form-update-book">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- ==================== Login ==================== -->
       <div class="backdrop" id="backdrop-login-user">
         <div class="modal" id="login-user-modal">
@@ -111,7 +130,7 @@
         </div>
       </div>
 
-      <!-- ==================== Register ==================== -->
+      <!-- ==================== Info Message ==================== -->
       <div class="backdrop" id="backdrop-info">
         <div class="modal" id="info-modal">
           <div class="header" id="header-text"></div>
@@ -122,8 +141,9 @@
         </div>
       </div>
 
-      <script src="indexedDB.js"></script>
-      <script src="scripts.js"></script>
+      <script src="js/initialize.js"></script>
+      <script src="js/indexedDB.js"></script>
+      <script src="js/logic.js"></script>
     </div>
   </body>
 </html>
