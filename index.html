@@ -15,7 +15,7 @@
           <button id="button-remove-book">Remove Book</button>
           <button id="button-show-charts">Show Charts</button>
         </div>
-        <div class="header-user">
+        <div class="header-user" id="header-user">
           <button id="button-login-user">Login</button>
           <button id="button-register-user">Register</button>
         </div>
@@ -33,9 +33,9 @@
       </div>
 
       <div class="grid-col-span-4 footer">
-        <div class="empty"></div>
+        <div class="documentation"><a href="documentation.html">Documentation</a></div>
         <div class="author">&copy; Rafał Walkowiak</div>
-        <div class="status">Status: offline</div>
+        <div class="status" id="status">Status: offline</div>
       </div>
 
       <!-- ==================== Add New Book ==================== -->
@@ -64,25 +64,6 @@
             <div class="button-wrapper">
               <button id="backdrop-add-book-close">Close</button>
               <button id="submit-form-add-book">Add</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- ==================== Update Book ==================== -->
-      <div class="backdrop" id="backdrop-login-user">
-        <div class="modal" id="login-user-modal">
-          <div class="header">
-            <span>Login</span>
-          </div>
-          <form id="form-update-book" action="#">
-            <label for="update-book-status">E-mail: </label>
-            <input type="text" id="update-book-status" name="update-book-status" />
-            <label for="update-book-score">Password: </label>
-            <input type="text" id="update-book-score" name="update-book-score" />
-            <div class="button-wrapper">
-              <button id="backdrop-update-book-close">Close</button>
-              <button id="submit-form-update-book">Login</button>
             </div>
           </form>
         </div>
@@ -141,7 +122,9 @@
         </div>
       </div>
 
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script src="js/initialize.js"></script>
+      <script src="js/serverDB.js"></script>
       <script src="js/indexedDB.js"></script>
       <script src="js/logic.js"></script>
     </div>

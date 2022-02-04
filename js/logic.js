@@ -84,12 +84,12 @@ async function validateAndSendAddBookFormData() {
 
   if (formIsOK) {
     const book = {
-      "title": title.value,
-      "author": author.value,
-      "genre": genre.value,
-      "pages": pages.value,
-      "status": status.value,
-      "score": score.value,
+      title: title.value,
+      author: author.value,
+      genre: genre.value,
+      pages: pages.value,
+      status: status.value,
+      score: score.value,
     };
 
     addBook(book);
@@ -124,9 +124,69 @@ function validateAndSendLoginUserFormData() {
   }
 
   if (formIsOK) {
-    isInOnlineMode = true;
-    clearLoginForm();
+    let data = {};
+    data.email = email.value;
+    data.password = password.value;
+
+    requestDB = getRequestObject();
+    requestDB.onreadystatechange = function () {
+      if (requestDB.readyState == 4 && requestDB.status == 200) {
+        const response = JSON.parse(requestDB.response);
+        if (response.status === "Success") {
+          showInfoBackdrop(document.getElementById("backdrop-login-user"), "Success!", "You are logged in!");
+          clearLoginForm();
+          document.getElementById("header-user").innerHTML = `
+          User: ${response.user}
+          <button onClick="logout()">Logout</button>
+          `;
+          isOnline = true;
+          document.getElementById("status").innerText = "Status: online";
+          buttonShowCharts.disabled = false;
+          synchronize();
+        } else {
+          showInfoBackdrop(null, "Fail!", "Check your email and password!");
+        }
+      }
+    };
+
+    requestDB.open("post", "http://localhost/Online-Bookshelf/api/user/login", true);
+    requestDB.send(JSON.stringify(data));
   }
+}
+
+function logout() {
+  requestDB = getRequestObject();
+  requestDB.onreadystatechange = function () {
+    if (requestDB.readyState == 4 && requestDB.status == 200) {
+      const response = JSON.parse(requestDB.response);
+      if (response.status === "Success") {
+        showInfoBackdrop(document.getElementById("backdrop-login-user"), "Success!", "You are logged out!");
+        clearLoginForm();
+        document.getElementById("header-user").innerHTML = `
+          <button id="button-login-user">Login</button>
+          <button id="button-register-user">Register</button>
+          `;
+
+        document.getElementById("button-login-user").addEventListener("click", () => {
+          document.getElementById("backdrop-login-user").style.display = "block";
+        });
+
+        document.getElementById("button-register-user").addEventListener("click", () => {
+          document.getElementById("backdrop-register-user").style.display = "block";
+        });
+
+        isOnline = false;
+        document.getElementById("status").innerText = "Status: offline";
+        buttonShowCharts.disabled = true;
+        showBooks();
+      } else {
+        showInfoBackdrop(null, "Fail!", "Failed to logout!");
+      }
+    }
+  };
+
+  requestDB.open("post", "http://localhost/Online-Bookshelf/api/user/logout", true);
+  requestDB.send(null);
 }
 
 function validateAndSendRegisterUserFormData() {
@@ -170,8 +230,28 @@ function validateAndSendRegisterUserFormData() {
   }
 
   if (formIsOK) {
-    console.log("TO-DO: Send register to the server!");
-    clearRegisterForm();
+    let data = {};
+    data.name = name.value;
+    data.email = email.value;
+    data.password = password.value;
+    data.passwordRepeated = passwordRepeated.value;
+
+    requestDB = getRequestObject();
+    requestDB.onreadystatechange = function () {
+      if (requestDB.readyState == 4 && requestDB.status == 200) {
+        const response = JSON.parse(requestDB.response);
+
+        if (response.status === "Success") {
+          showInfoBackdrop(document.getElementById("backdrop-register-user"), "Success!", "User has been succesfully registered!");
+          clearRegisterForm();
+        } else {
+          showInfoBackdrop(null, "Fail!", "User registartion failed, try with different e-mail!");
+        }
+      }
+    };
+
+    requestDB.open("post", "http://localhost/Online-Bookshelf/api/user/register", true);
+    requestDB.send(JSON.stringify(data));
   }
 }
 
@@ -196,7 +276,13 @@ function clearRegisterForm() {
 }
 
 async function showBooks() {
-  const booksData = await getAllBooksFromIndexedDB();
+  let booksData = [];
+
+  if (isOnline) {
+    booksData = await getAllBooksFromServerDB();
+  } else {
+    booksData = await getAllBooksFromIndexedDB();
+  }
   const outputHTML = [];
 
   booksData.forEach((book) => {
@@ -223,19 +309,36 @@ async function showBooks() {
 }
 
 async function addBook(book) {
-  try {
-    await addBookToIndexedDB(book);
-    await showBooks();
-    clearAddBookForm();
-    showInfoBackdrop(document.getElementById("backdrop-add-book"), "Success!", "Book has been added!");
-  } catch (error) {
-    setInputAlert(title, "Book & Author combination exists!");
-    setInputAlert(author, "Book & Author combination exists!");
+  if (isOnline) {
+    const status = await insertBookServer(book);
+    if (status == "Success") {
+      await showBooks();
+      clearAddBookForm();
+      showInfoBackdrop(document.getElementById("backdrop-add-book"), "Success!", "Book has been added!");
+    } else {
+      showInfoBackdrop(document.getElementById("backdrop-add-book"), "Fail!", "Book hasn't been added!");
+    }
+  } else {
+    try {
+      await addBookToIndexedDB(book);
+      clearAddBookForm();
+      await showBooks();
+    } catch (error) {
+      setInputAlert(title, "Book & Author combination exists!");
+      setInputAlert(author, "Book & Author combination exists!");
+    }
   }
 }
 
 async function showEditMenu() {
-  const booksData = await getAllBooksFromIndexedDB();
+  let booksData = [];
+
+  if (isOnline) {
+    booksData = await getAllBooksFromServerDB();
+  } else {
+    booksData = await getAllBooksFromIndexedDB();
+  }
+
   const outputHTML = [];
 
   booksData.forEach((book) => {
@@ -302,7 +405,13 @@ async function showEditMenu() {
       }
 
       if (formOK) {
-        const success = updateBookInIndexedDB(selectedBook.value, separator, newStatus.value, newScore.value);
+        let success = false;
+        if (isOnline) {
+          const status = updateBookInServerDB(selectedBook.value, separator, newStatus.value, newScore.value);
+          if (status == "Success") success = true;
+        } else {
+          success = updateBookInIndexedDB(selectedBook.value, separator, newStatus.value, newScore.value);
+        }
 
         if (success) {
           showInfoBackdrop(null, "Success!", "Book has been successfully edited!");
@@ -314,7 +423,13 @@ async function showEditMenu() {
 }
 
 async function showRemoveMenu() {
-  const booksData = await getAllBooksFromIndexedDB();
+  let booksData = [];
+  if (isOnline) {
+    booksData = await getAllBooksFromServerDB();
+  } else {
+    booksData = await getAllBooksFromIndexedDB();
+  }
+
   const outputHTML = [];
 
   booksData.forEach((book) => {
@@ -348,12 +463,114 @@ async function showRemoveMenu() {
   document.getElementById("button-remove-selected-book").addEventListener("click", () => {
     const selectedBook = document.getElementById("select-remove-book");
     if (!(selectedBook.value === "")) {
-      const success = removeBookFromIndexedDB(selectedBook.value, separator);
+      let success = false;
+      if (isOnline) {
+        const status = removeBookFromServerDB(selectedBook.value, separator);
+        if (status == "Success") success = true;
+      } else {
+        success = removeBookFromIndexedDB(selectedBook.value, separator);
+      }
 
       if (success) {
         showRemoveMenu();
         showInfoBackdrop(null, "Success!", "Book has been successfully removed!");
       }
     }
+  });
+}
+
+async function synchronize() {
+  const booksData = await getAllBooksFromIndexedDB();
+
+  if (booksData.length > 0) {
+    booksData.forEach((book) => {
+      insertBookServer(book);
+      removeBookFromIndexedDB(book.title + separator + book.author, separator);
+    });
+  }
+
+  await showBooks();
+  showInfoBackdrop(null, "Synchronization", "Data has been synchronized with server!");
+}
+
+async function showCharts() {
+  const resultDiv = document.getElementById("books-data");
+  resultDiv.innerHTML = `<canvas id="booksScore"> </canvas>`;
+  resultDiv.innerHTML += `<canvas id="booksStatus"> </canvas>`;
+
+  await booksStatusChart();
+  await booksScoreChart();
+}
+
+async function booksScoreChart() {
+  const booksData = await getAllBooksFromServerDB();
+  const xValues = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const yValues = new Array(11).fill(0);
+
+  booksData.forEach((book) => {
+    if (book.status == 1) {
+      yValues[book.score]++;
+    }
+  });
+
+  new Chart("booksScore", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          backgroundColor: "black",
+          data: yValues,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Score",
+        },
+        legend: {
+          display: false,
+        },
+      },
+    },
+  });
+}
+
+async function booksStatusChart() {
+  const booksData = await getAllBooksFromServerDB();
+  const yValues = new Array(3).fill(0);
+
+  booksData.forEach((book) => {
+    yValues[parseInt(book.status) + 1]++;
+  });
+
+  console.log(yValues);
+
+  const xValues = ["Want to read", "Reading", "Finished"];
+  const barColors = ["red", "orange", "green"];
+
+
+  new Chart("booksStatus", {
+    type: "doughnut",
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          backgroundColor: barColors,
+          data: yValues,
+        },
+      ],
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Books staus",
+      },
+      legend: {
+        display: false,
+      },
+    },
   });
 }
