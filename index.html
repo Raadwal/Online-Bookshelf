@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Online Bookshelf</title>
+  </head>
+  <body>
+    <div class="grid-content-wrapper">
+      <div class="grid-col-span-4 header">
+        <div class="header-buttons">
+          <button id="button-show-books">Show Books</button>
+          <button id="button-add-book">Add Book</button>
+          <button id="button-update-book">Edit Book</button>
+          <button id="button-remove-book">Remove Book</button>
+          <button id="button-show-charts">Show Charts</button>
+        </div>
+        <div class="header-user" id="header-user">
+          <button id="button-login-user">Login</button>
+          <button id="button-register-user">Register</button>
+        </div>
+      </div>
+
+      <div class="grid-col-span-4 query-results" id="books-data">
+        <div class="card-book card-book-title">
+          <div class="book-title">Title</div>
+          <div class="book-author">Author</div>
+          <div class="book-genre">Genre</div>
+          <div class="book-pages">Pages</div>
+          <div class="book-reading-status">Status</div>
+          <div class="book-score">Score</div>
+        </div>
+      </div>
+
+      <div class="grid-col-span-4 footer">
+        <div class="documentation"><a href="documentation.html">Documentation</a></div>
+        <div class="author">&copy; Rafał Walkowiak</div>
+        <div class="status" id="status">Status: offline</div>
+      </div>
+
+      <!-- ==================== Add New Book ==================== -->
+      <div class="backdrop" id="backdrop-add-book">
+        <div class="modal" id="add-book-modal">
+          <div class="header">
+            <span>Add New Book</span>
+          </div>
+          <form id="form-add-book" action="#">
+            <label for="add-book-title">Title: </label>
+            <input type="text" id="add-book-title" name="add-book-title" />
+            <label for="add-book-author">Author: </label>
+            <input type="text" id="add-book-author" name="add-book-author" />
+            <label for="add-book-genre">Genre: </label>
+            <input type="text" id="add-book-genre" name="add-book-genre" />
+            <label for="add-book-pages">Pages: </label>
+            <input type="text" id="add-book-pages" name="add-book-pages" />
+            <label for="add-book-status">Status: </label>
+            <select id="add-book-status" name="add-book-status">
+              <option value="-1">Want to read</option>
+              <option value="0">Reading</option>
+              <option value="1">Finished</option>
+            </select>
+            <label for="add-book-score">Score: </label>
+            <input type="text" id="add-book-score" name="add-book-score" />
+            <div class="button-wrapper">
+              <button id="backdrop-add-book-close">Close</button>
+              <button id="submit-form-add-book">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==================== Login ==================== -->
+      <div class="backdrop" id="backdrop-login-user">
+        <div class="modal" id="login-user-modal">
+          <div class="header">
+            <span>Login</span>
+          </div>
+          <form id="form-login-user" action="#">
+            <label for="login-user-email">E-mail: </label>
+            <input type="text" id="login-user-email" name="login-user-email" />
+            <label for="login-user-password">Password: </label>
+            <input type="password" id="login-user-password" name="login-user-password" />
+            <div class="button-wrapper">
+              <button id="backdrop-login-user-close">Close</button>
+              <button id="submit-form-login-user">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==================== Register ==================== -->
+      <div class="backdrop" id="backdrop-register-user">
+        <div class="modal" id="register-user-modal">
+          <div class="header">
+            <span>Register</span>
+          </div>
+          <form id="form-register-user" action="#">
+            <label for="register-user-name">Name: </label>
+            <input type="text" id="register-user-name" name="register-user-name" />
+            <label for="register-user-email">E-mail: </label>
+            <input type="text" id="register-user-email" name="register-user-email" />
+            <label for="register-user-password">Password: </label>
+            <input type="password" id="register-user-password" name="register-user-password" />
+            <label for="register-user-password-repeated">Repeat Password: </label>
+            <input type="password" id="register-user-password-repeated" name="register-user-password-repeated" />
+            <div class="button-wrapper">
+              <button id="backdrop-register-user-close">Close</button>
+              <button id="submit-form-register-user">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==================== Info Message ==================== -->
+      <div class="backdrop" id="backdrop-info">
+        <div class="modal" id="info-modal">
+          <div class="header" id="header-text"></div>
+          <div class="message" id="message-text"></div>
+          <div class="button-wrapper">
+            <button id="backdrop-info-close">Ok</button>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="js/initialize.js"></script>
+      <script src="js/serverDB.js"></script>
+      <script src="js/indexedDB.js"></script>
+      <script src="js/logic.js"></script>
+    </div>
+  </body>
+</html>
